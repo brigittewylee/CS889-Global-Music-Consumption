@@ -94,7 +94,11 @@ const includedCountries = [
   "ZA",
 ];
 
-export function MyGlobe() {
+type Props = {
+  date: string;
+  country: string;
+};
+export function MyGlobe(props: Props) {
   const [countryPolygons, setCountryPolygons] = useState({ features: [] });
   const [countryLatLong, setCountryLatLong] = useState({ features: [] });
   const [hover, setHover] = useState([]);
@@ -121,12 +125,10 @@ export function MyGlobe() {
           const country_coords = cds[country];
           const origin_coords = cds[origin_country];
           return { country, country_coords, month, name, artists, borda_score, origin_country, origin_coords };
-        })
+        });
         setData(parsedData);
-        console.log(parsedData)
       });
   }, []);
-
   return (
     <Box>
       <Globe
@@ -147,7 +149,7 @@ export function MyGlobe() {
         labelAltitude={0.012}
         labelIncludeDot={true}
 
-        // arcsData={data.filter(d => )}
+        arcsData={data.filter(a => a.country_)}
         // arcEndLat={d => d.country_coords[1]}
         // arcEndLng={d => d.country_coords[0]}
         // arcStartLat={d => d.origin_country[1]}
@@ -163,4 +165,4 @@ export function MyGlobe() {
 //     !! Specific examples used: hollow-globe, choropleth-countries, world-cities, airline-routes
 // 2. Country centroids: https://raw.githubusercontent.com/gavinr/world-countries-centroids/master/dist/countries.geojson
 // 3. Add singapore, comoros, saotome and principles, hongkong polygons: https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/50m/cultural/ne_50m_admin_0_countries.json
-// 
+//
