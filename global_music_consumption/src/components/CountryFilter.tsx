@@ -1,7 +1,13 @@
 import { Box, FormControl, MenuItem, Select, Typography } from "@mui/material";
 
-export function CountryFilter() {
+type Props = {
+  country: string;
+  setCountry: (val: string) => void;
+};
+
+export function CountryFilter(props: Props) {
   const countries = [
+    "Global",
     "United Arab Emirates",
     "Angola",
     "Argentina",
@@ -102,6 +108,7 @@ export function CountryFilter() {
         <Select
           labelId="country-filter-label"
           id="country-filter"
+          onChange={(e) => props.setCountry(e.target.value)}
         >
           {countries.map((country) => <MenuItem value={country}>{country}</MenuItem>)}
         </Select>
