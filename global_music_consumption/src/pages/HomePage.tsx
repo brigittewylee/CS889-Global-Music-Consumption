@@ -2,10 +2,22 @@ import { CountryFilter } from "#/components/CountryFilter";
 import { MyGlobe } from "#/components/Globe";
 import { TimelineSlider } from "#/components/TimelineSlider";
 import { Box, Typography } from "@mui/material";
+import { useState } from "react";
 
 export function HomePage() {
+  const [date, setDate] = useState("2023-10");
+  const [country, setCountry] = useState("Global");
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", overflow: "hidden", height: "100vh", width: "100vw", border: '1px solid green' }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        height: "100vh",
+        width: "100vw",
+        border: "1px solid green",
+      }}
+    >
       <Box
         sx={{
           width: "100%",
@@ -20,7 +32,7 @@ export function HomePage() {
           <Typography>
             GLOBAL MUSIC CONSUMPTION
           </Typography>
-          <CountryFilter />
+          <CountryFilter country={country} setCountry={setCountry} />
         </Box>
 
         <Box
@@ -32,12 +44,12 @@ export function HomePage() {
             alignItems: "center",
           }}
         >
-          <MyGlobe />
+          <MyGlobe date={date} country={country} />
         </Box>
       </Box>
 
       <Box sx={{ width: "100%", p: 3, pl: 5, pr: 5, height: "15%" }}>
-        <TimelineSlider />
+        <TimelineSlider date={date} setDate={setDate} />
       </Box>
     </Box>
   );
