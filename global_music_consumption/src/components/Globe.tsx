@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import Papa from "papaparse";
 import { useEffect, useState } from "react";
 import Globe from "react-globe.gl";
 import type { StringMappingType } from "typescript";
@@ -129,20 +130,19 @@ export function MyGlobe(props: Props) {
         setCountryPolygons(poly);
         setCountryLatLong(ll);
         setCoordinates(cds);
-
         // loads in cleaned ranked dataset as string and slice into arr of json
-        const arrOfData = data.split("\n").slice(1);
-        const parsedData = arrOfData.map(songObj => {
+        const parsedData = Papa.parse(data);
+        const formattedData = parsedData.data.slice(1).map(songObj => {
           // destructure into vars and load as json objects
-          const [u1, u2, u3, index, country, month, name, artists, borda_score, origin_country] = songObj.split(",");
+          const [u1, u2, u3, index, country, month, name, artists, borda_score, origin_country] = songObj;
           const country_coords = cds[country];
           const origin_coords = cds[origin_country];
           return { country, country_coords, month, name, artists, borda_score, origin_country, origin_coords };
         });
-        setData(parsedData);
+        setData(formattedData);
+        console.log("test:", formattedData[0]);
       });
   }, []);
-
   const filtered = data.filter(a => includedCountries[a.country] === props.country && a.month === props.date);
   console.log(filtered);
 
@@ -172,7 +172,7 @@ export function MyGlobe(props: Props) {
         arcStartLng={a => a.origin_coords[0]}
         arcLabel={a => `${a.name} by ${a.artists}`}
         arcColor={() => ["rgba(0, 255, 0, 0.5)", "rgba(255, 0, 0, 0.5)"]}
-        arcAltitude={0.2}
+        arcAltitude={a => 0.1 + Math.random() * 0.2}
         arcStroke={0.5}
       />
     </Box>
