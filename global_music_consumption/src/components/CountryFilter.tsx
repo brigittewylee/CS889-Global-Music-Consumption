@@ -106,11 +106,12 @@ export function CountryFilter(props: Props) {
       </Typography>
       <FormControl sx={{ width: "100%" }}>
         <Select
+          value={props.country ?? "Global"}
           labelId="country-filter-label"
           id="country-filter"
           onChange={(e) => props.setCountry(e.target.value)}
         >
-          {countries.map((country) => <MenuItem value={country}>{country}</MenuItem>)}
+          {countries.map((country) => <MenuItem key={country} value={country}>{country}</MenuItem>)}
         </Select>
       </FormControl>
     </Box>

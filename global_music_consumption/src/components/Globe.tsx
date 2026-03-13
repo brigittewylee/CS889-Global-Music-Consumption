@@ -1,109 +1,122 @@
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import Globe from "react-globe.gl";
+import type { StringMappingType } from "typescript";
 
-const includedCountries = [
-  "AE",
-  "AO",
-  "AR",
-  "AT",
-  "AU",
-  "BE",
-  "BG",
-  "BO",
-  "BR",
-  "BY",
-  "CA",
-  "CH",
-  "CL",
-  "CM",
-  "CN",
-  "CO",
-  "CR",
-  "CZ",
-  "DE",
-  "DK",
-  "DO",
-  "DZ",
-  "EC",
-  "EE",
-  "EG",
-  "ES",
-  "FI",
-  "FR",
-  "GB",
-  "GH",
-  "GR",
-  "GT",
-  "HK",
-  "HN",
-  "HU",
-  "ID",
-  "IE",
-  "IL",
-  "IN",
-  "IQ",
-  "IS",
-  "IT",
-  "JM",
-  "JP",
-  "KG",
-  "KM",
-  "KR",
-  "KZ",
-  "LB",
-  "LK",
-  "LT",
-  "LU",
-  "LV",
-  "LY",
-  "MA",
-  "MD",
-  "MX",
-  "MY",
-  "NG",
-  "NI",
-  "NL",
-  "NO",
-  "NZ",
-  "PA",
-  "PE",
-  "PH",
-  "PK",
-  "PL",
-  "PR",
-  "PT",
-  "PY",
-  "RO",
-  "RU",
-  "SA",
-  "SE",
-  "SG",
-  "SK",
-  "ST",
-  "SV",
-  "SY",
-  "TH",
-  "TR",
-  "TW",
-  "UA",
-  "US",
-  "UY",
-  "VE",
-  "VN",
-  "ZA",
-];
+const includedCountries = {
+  "AE": "United Arab Emirates",
+  "AO": "Angola",
+  "AR": "Argentina",
+  "AT": "Austria",
+  "AU": "Australia",
+  "BE": "Belgium",
+  "BG": "Bulgaria",
+  "BO": "Bolivia",
+  "BR": "Brazil",
+  "BY": "Belarus",
+  "CA": "Canada",
+  "CH": "Switzerland",
+  "CL": "Chile",
+  "CM": "Cameroon",
+  "CN": "China",
+  "CO": "Colombia",
+  "CR": "Costa Rica",
+  "CZ": "Czech Republic",
+  "DE": "Germany",
+  "DK": "Denmark",
+  "DO": "Dominican Republic",
+  "DZ": "Algeria",
+  "EC": "Ecuador",
+  "EE": "Estonia",
+  "EG": "Egypt",
+  "ES": "Spain",
+  "FI": "Finland",
+  "FR": "France",
+  "GB": "United Kingdom",
+  "GH": "Ghana",
+  "GR": "Greece",
+  "GT": "Guatemala",
+  "HK": "Hong Kong",
+  "HN": "Honduras",
+  "HU": "Hungary",
+  "ID": "Indonesia",
+  "IE": "Ireland",
+  "IL": "Israel",
+  "IN": "India",
+  "IQ": "Iraq",
+  "IS": "Iceland",
+  "IT": "Italy",
+  "JM": "Jamaica",
+  "JP": "Japan",
+  "KG": "Kyrgyzstan",
+  "KM": "Comoros",
+  "KR": "South Korea",
+  "KZ": "Kazakhstan",
+  "LB": "Lebanon",
+  "LK": "Sri Lanka",
+  "LT": "Lithuania",
+  "LU": "Luxembourg",
+  "LV": "Latvia",
+  "LY": "Libya",
+  "MA": "Morocco",
+  "MD": "Moldova",
+  "MX": "Mexico",
+  "MY": "Malaysia",
+  "NG": "Nigeria",
+  "NI": "Nicaragua",
+  "NL": "Netherlands",
+  "NO": "Norway",
+  "NZ": "New Zealand",
+  "PA": "Panama",
+  "PE": "Peru",
+  "PH": "Philippines",
+  "PK": "Pakistan",
+  "PL": "Poland",
+  "PR": "Puerto Rico",
+  "PT": "Portugal",
+  "PY": "Paraguay",
+  "RO": "Romania",
+  "RU": "Russia",
+  "SA": "Saudi Arabia",
+  "SE": "Sweden",
+  "SG": "Singapore",
+  "SK": "Slovakia",
+  "ST": "Sao Tome and Principe",
+  "SV": "El Salvador",
+  "SY": "Syria",
+  "TH": "Thailand",
+  "TR": "Turkey",
+  "TW": "Taiwan",
+  "UA": "Ukraine",
+  "US": "United States",
+  "UY": "Uruguay",
+  "VE": "Venezuela",
+  "VN": "Vietnam",
+  "ZA": "South Africa",
+};
 
 type Props = {
   date: string;
   country: string;
 };
+
+type SpotifyData = {
+  country: string;
+  country_coords: { long: number; lat: number };
+  month: string;
+  name: String;
+  artists: string;
+  borda_score: number;
+  origin_country: string;
+  origin_coords: { long: number; lat: number };
+};
+
 export function MyGlobe(props: Props) {
   const [countryPolygons, setCountryPolygons] = useState({ features: [] });
   const [countryLatLong, setCountryLatLong] = useState({ features: [] });
   const [hover, setHover] = useState([]);
   const [coordinates, setCoordinates] = useState();
-  const [data, setData] = useState();
+  const [data, setData] = useState<SpotifyData[]>([]);
 
   useEffect(() => {
     Promise.all([
@@ -129,6 +142,10 @@ export function MyGlobe(props: Props) {
         setData(parsedData);
       });
   }, []);
+
+  const filtered = data.filter(a => includedCountries[a.country] === props.country && a.month === props.date);
+  console.log(filtered);
+
   return (
     <Box>
       <Globe
@@ -142,19 +159,21 @@ export function MyGlobe(props: Props) {
           logarithmicDepthBuffer: true,
           precision: "highp",
         }}
-        labelsData={countryLatLong.features.filter(d => includedCountries.includes(d.properties.ISO))}
+        labelsData={countryLatLong.features.filter(d => Object.keys(includedCountries).includes(d.properties.ISO))}
         labelLat={d => d.geometry.coordinates[1]}
         labelLng={d => d.geometry.coordinates[0]}
         labelText={d => d.properties.COUNTRY}
         labelAltitude={0.012}
         labelIncludeDot={true}
-
-        arcsData={data.filter(a => a.country_)}
-        // arcEndLat={d => d.country_coords[1]}
-        // arcEndLng={d => d.country_coords[0]}
-        // arcStartLat={d => d.origin_country[1]}
-        // arcStartLng={d => d.origin_country[0]}
-        // arcLabel={d => `${d.name} by ${d.artists}`}
+        arcsData={filtered}
+        arcEndLat={a => a.country_coords[1]}
+        arcEndLng={a => a.country_coords[0]}
+        arcStartLat={a => a.origin_coords[1]}
+        arcStartLng={a => a.origin_coords[0]}
+        arcLabel={a => `${a.name} by ${a.artists}`}
+        arcColor={() => ["rgba(0, 255, 0, 0.5)", "rgba(255, 0, 0, 0.5)"]}
+        arcAltitude={0.2}
+        arcStroke={0.5}
       />
     </Box>
   );
