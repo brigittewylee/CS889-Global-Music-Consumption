@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import Papa from "papaparse";
 import { useEffect, useRef, useState } from "react";
 import Globe from "react-globe.gl";
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
 const includedCountries = {
   "AE": "United Arab Emirates",
@@ -99,6 +99,7 @@ const includedCountries = {
 type Props = {
   date: string;
   country: string;
+  impex: string;
 };
 
 type SpotifyData = {
@@ -112,10 +113,7 @@ type SpotifyData = {
   origin_coords: { long: number; lat: number };
 };
 
-
-
 export function MyGlobe(props: Props) {
-  
   const [countryPolygons, setCountryPolygons] = useState({ features: [] });
   const [countryLatLong, setCountryLatLong] = useState({ features: [] });
   const [hover, setHover] = useState([]);
@@ -146,7 +144,10 @@ export function MyGlobe(props: Props) {
         console.log("test:", formattedData[0]);
       });
   }, []);
-  const filtered = data.filter(a => includedCountries[a.country] === props.country && a.month === props.date);
+  const filteredImport = data.filter(a => a.country === props.country && a.month === props.date);
+  const filteredExport = data.filter(a => a.origin_country === props.country && a.month === props.date);
+
+  const filtered = (props.impex === "import") ? filteredImport : filteredExport;
   console.log(filtered);
 
   return (
@@ -169,7 +170,6 @@ export function MyGlobe(props: Props) {
         labelSize={0.8}
         labelAltitude={0.02}
         labelIncludeDot={true}
-
         arcsData={props.country === "Global" ? data : filtered}
         arcEndLat={a => a.country_coords[1]}
         arcEndLng={a => a.country_coords[0]}

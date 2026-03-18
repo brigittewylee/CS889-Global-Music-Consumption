@@ -1,12 +1,15 @@
 import { CountryFilter } from "#/components/CountryFilter";
 import { MyGlobe } from "#/components/Globe";
+import { ImportExportRadioButton } from "#/components/RadioButtons";
 import { TimelineSlider } from "#/components/TimelineSlider";
 import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 
 export function HomePage() {
   const [date, setDate] = useState("2023-10");
-  const [country, setCountry] = useState("Canada");
+  const [country, setCountry] = useState("CA");
+  const [impex, setImpex] = useState("import");
+
   return (
     <Box
       sx={{
@@ -42,7 +45,10 @@ export function HomePage() {
             GLOBAL MUSIC CONSUMPTION
           </Typography>
 
-          <CountryFilter country={country} setCountry={setCountry} />
+          <CountryFilter country={country} setCountry={setCountry} impex={impex} />
+          <Box sx={{ border: "1px solid magenta" }}>
+            <ImportExportRadioButton impex={impex} setImpex={setImpex} />
+          </Box>
         </Box>
 
         <Box
@@ -56,7 +62,7 @@ export function HomePage() {
             m: 2,
           }}
         >
-          <MyGlobe date={date} country={country} />
+          <MyGlobe date={date} country={country} impex={impex} />
         </Box>
       </Box>
 
