@@ -1,4 +1,5 @@
-import { Box, Slider, Typography } from "@mui/material";
+import { Box, Button, Slider, Typography } from "@mui/material";
+import { Play } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -40,39 +41,46 @@ export function TimelineSlider(props: Props) {
       month: monthMap[t.label.split("-")[1]],
     }));
   return (
-    <Box sx={{ position: "relative", px: 2 }}>
-      <Box sx={{ position: "relative", height: "20px" }}>
-        {yearMarkers.map(y => (
-          <Box>
-            <Typography
-              key={y.year}
-              sx={{
-                position: "absolute",
-                left: `${y.spacing}%`,
-                transform: "translateX(-50%)",
-              }}
-            >
-              {y.year}
-            </Typography>
-            <Box
-              sx={{
-                position: "absolute",
-                left: `${y.spacing}%`,
-                transform: "translateX(-50%)",
-                border: "1px solid white",
-                height: "50px",
-              }}
-            />
-          </Box>
-        ))}
+    <Box sx={{ display: "flex", flexDirection: "row", width: "100%", border: "1px solid blue" }}>
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", pr: 2, pb: 1 }}>
+        <Button>
+          <Play />
+        </Button>
       </Box>
+      <Box sx={{ position: "relative", px: 2, width: "100%" }}>
+        <Box sx={{ position: "relative", height: "20px" }}>
+          {yearMarkers.map(y => (
+            <Box>
+              <Typography
+                key={y.year}
+                sx={{
+                  position: "absolute",
+                  left: `${y.spacing}%`,
+                  transform: "translateX(-50%)",
+                }}
+              >
+                {y.year}
+              </Typography>
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: `${y.spacing}%`,
+                  transform: "translateX(-50%)",
+                  border: "1px solid white",
+                  height: "50px",
+                }}
+              />
+            </Box>
+          ))}
+        </Box>
 
-      <Slider
-        marks={Months.map(t => ({ value: t.value, label: t.month }))}
-        min={0}
-        max={timeline.length - 1}
-        onChange={(e, value) => props.setDate(timeline[Number(value)].label)}
-      />
+        <Slider
+          marks={Months.map(t => ({ value: t.value, label: t.month }))}
+          min={0}
+          max={timeline.length - 1}
+          onChange={(e, value) => props.setDate(timeline[Number(value)].label)}
+        />
+      </Box>
     </Box>
   );
 }

@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import Papa from "papaparse";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
@@ -119,6 +119,7 @@ export function MyGlobe(props: Props) {
   const [hover, setHover] = useState([]);
   const [coordinates, setCoordinates] = useState();
   const [data, setData] = useState<SpotifyData[]>([]);
+  const globeRef = useRef();
 
   useEffect(() => {
     Promise.all([
@@ -144,6 +145,13 @@ export function MyGlobe(props: Props) {
         console.log("test:", formattedData[0]);
       });
   }, []);
+
+  useEffect(() => {
+    if (!globeRef.current || !coordinates) return;
+    const coords = coordinates[props.country];
+    globeRef.current.pointOfView({ lat: coords[1], lng: coords[0], altitude: 1.25 }, 1500);
+  }, [props.country]);
+
   const filteredImport = data.filter(a => a.country === props.country && a.month === props.date);
   const filteredExport = data.filter(a => a.origin_country === props.country && a.month === props.date);
 
@@ -153,6 +161,7 @@ export function MyGlobe(props: Props) {
   return (
     <Box>
       <Globe
+        ref={globeRef}
         backgroundColor="rgba(0,0,0,0)"
         polygonsData={countryPolygons.features}
         polygonCapColor={() => "rgba(0, 0, 0, 0.5)"}
