@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import Papa from "papaparse";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Globe from "react-globe.gl";
-import type { StringMappingType } from "typescript";
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 const includedCountries = {
   "AE": "United Arab Emirates",
@@ -112,7 +112,10 @@ type SpotifyData = {
   origin_coords: { long: number; lat: number };
 };
 
+
+
 export function MyGlobe(props: Props) {
+  
   const [countryPolygons, setCountryPolygons] = useState({ features: [] });
   const [countryLatLong, setCountryLatLong] = useState({ features: [] });
   const [hover, setHover] = useState([]);
@@ -163,17 +166,22 @@ export function MyGlobe(props: Props) {
         labelLat={d => d.geometry.coordinates[1]}
         labelLng={d => d.geometry.coordinates[0]}
         labelText={d => d.properties.COUNTRY}
-        labelAltitude={0.012}
+        labelSize={0.8}
+        labelAltitude={0.02}
         labelIncludeDot={true}
-        arcsData={filtered}
+
+        arcsData={props.country === "Global" ? data : filtered}
         arcEndLat={a => a.country_coords[1]}
         arcEndLng={a => a.country_coords[0]}
         arcStartLat={a => a.origin_coords[1]}
         arcStartLng={a => a.origin_coords[0]}
         arcLabel={a => `${a.name} by ${a.artists}`}
         arcColor={() => ["rgba(0, 255, 0, 0.5)", "rgba(255, 0, 0, 0.5)"]}
-        arcAltitude={a => 0.1 + Math.random() * 0.2}
+        arcAltitude={props.country === "Global" ? 0.5 : a => 0.1 + Math.random() * 0.7}
         arcStroke={0.5}
+        arcDashAnimateTime={() => Math.random() * 4000 + 500}
+        arcDashLength={0.05}
+        arcDashGap={0.1}
       />
     </Box>
   );

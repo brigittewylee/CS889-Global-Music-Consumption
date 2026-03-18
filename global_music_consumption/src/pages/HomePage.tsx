@@ -6,7 +6,7 @@ import { useState } from "react";
 
 export function HomePage() {
   const [date, setDate] = useState("2023-10");
-  const [country, setCountry] = useState("Global");
+  const [country, setCountry] = useState("Canada");
   return (
     <Box
       sx={{
@@ -28,20 +28,32 @@ export function HomePage() {
           overflow: "hidden",
         }}
       >
-        <Box sx={{ display: "flex", flexDirection: "column", p: 2, width: "35%" }}>
-          <Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            p: 2,
+            width: "30%",
+            color: "black",
+            border: "1px solid cyan",
+          }}
+        >
+          <Typography sx={{ color: "white" }}>
             GLOBAL MUSIC CONSUMPTION
           </Typography>
+
           <CountryFilter country={country} setCountry={setCountry} />
         </Box>
 
         <Box
           sx={{
             display: "flex",
-            width: "65%",
+            width: "70%",
             border: "1px solid green",
             justifyContent: "center",
             alignItems: "center",
+            overflow: "hidden",
+            m: 2,
           }}
         >
           <MyGlobe date={date} country={country} />

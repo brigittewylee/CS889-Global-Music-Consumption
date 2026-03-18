@@ -7,7 +7,7 @@ type Props = {
 
 export function CountryFilter(props: Props) {
   const countries = [
-    "Global",
+    // "Global",
     "United Arab Emirates",
     "Angola",
     "Argentina",
@@ -101,7 +101,7 @@ export function CountryFilter(props: Props) {
 
   return (
     <Box sx={{ width: "100%", border: "1px solid orange" }}>
-      <Typography>
+      <Typography sx={{ color: "white" }}>
         Filter by Country:
       </Typography>
       <FormControl sx={{ width: "100%" }}>
