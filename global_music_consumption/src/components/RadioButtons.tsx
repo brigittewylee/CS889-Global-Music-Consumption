@@ -12,13 +12,27 @@ export function ImportExportRadioButton(props: Props) {
       <FormLabel>
         <RadioGroup row value={props.impex} onChange={(e) => props.setImpex(e.target.value)}>
           <FormControlLabel
+            sx={{ color: "white" }}
             value="import"
-            control={<Radio />}
+            control={
+              <Radio
+                sx={{
+                  color: "white",
+                }}
+              />
+            }
             label="Import"
           />
           <FormControlLabel
+            sx={{ color: "white" }}
             value="export"
-            control={<Radio />}
+            control={
+              <Radio
+                sx={{
+                  color: "white",
+                }}
+              />
+            }
             label="Export"
           />
         </RadioGroup>

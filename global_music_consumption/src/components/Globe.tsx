@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import Papa from "papaparse";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
@@ -100,26 +100,39 @@ type Props = {
   date: string;
   country: string;
   impex: string;
+  onFiltered: (songs: SpotifyData[]) => void;
 };
 
 type SpotifyData = {
   country: string;
   country_coords: { long: number; lat: number };
   month: string;
-  name: String;
+  name: string;
   artists: string;
   borda_score: number;
   origin_country: string;
   origin_coords: { long: number; lat: number };
+  destinations?: string[];
 };
 
 export function MyGlobe(props: Props) {
   const [countryPolygons, setCountryPolygons] = useState({ features: [] });
   const [countryLatLong, setCountryLatLong] = useState({ features: [] });
-  const [hover, setHover] = useState([]);
   const [coordinates, setCoordinates] = useState();
   const [data, setData] = useState<SpotifyData[]>([]);
-  const globeRef = useRef();
+  const globeRef = useRef(null);
+
+  useEffect(() => {
+    if (!globeRef.current) return;
+
+    const bloomPass = new UnrealBloomPass();
+    bloomPass.threshold = 0;
+    bloomPass.strength = 0.5;
+    bloomPass.radius = 0.15;
+
+    globeRef.current.postProcessingComposer().addPass(bloomPass);
+  }, []);
+  console.log(props.country);
 
   useEffect(() => {
     Promise.all([
@@ -152,22 +165,59 @@ export function MyGlobe(props: Props) {
     globeRef.current.pointOfView({ lat: coords[1], lng: coords[0], altitude: 1.25 }, 1500);
   }, [props.country]);
 
-  const filteredImport = data.filter(a => a.country === props.country && a.month === props.date);
-  const filteredExport = data.filter(a => a.origin_country === props.country && a.month === props.date);
+  const filteredImport = useMemo(() => data.filter(a => a.country === props.country && a.month === props.date), [
+    data,
+    props.country,
+    props.date,
+  ]);
+  const filteredExport = useMemo(() => {
+    const arr = data.filter(a =>
+      a.origin_country === props.country && a.month === props.date && a.country !== a.origin_country
+    );
+    const grouped = new Map<string, SpotifyData & { destinations: string[] }>();
+    arr.forEach(a => {
+      if (grouped.has(a.name)) {
+        const newSong = grouped.get(a.name)!;
+        newSong.destinations.push(a.country);
+      } else {
+        grouped.set(a.name, { ...a, destinations: [a.country] });
+      }
+    });
+    return Array.from(grouped.values());
+  }, [data, props.country, props.date]);
+  const filtered = useMemo(() => {
+    return (props.impex === "import") ? filteredImport : filteredExport;
+  }, [filteredImport, filteredExport, props.impex]);
 
-  const filtered = (props.impex === "import") ? filteredImport : filteredExport;
-  console.log(filtered);
+  useEffect(() => {
+    props.onFiltered(filtered);
+  }, [filtered]);
 
   return (
     <Box>
       <Globe
         ref={globeRef}
+        showAtmosphere={false}
         backgroundColor="rgba(0,0,0,0)"
         polygonsData={countryPolygons.features}
-        polygonCapColor={() => "rgba(0, 0, 0, 0.5)"}
+        polygonCapColor={d => {
+          return d.properties.ISO_A2 === props.country ? "rgba(192, 192, 192, 0.07)" : "rgba(0, 0, 0, 0)";
+        }}
         polygonStrokeColor={() => "#ffffff"}
-        polygonSideColor={() => "rgba(0, 0, 0, 0)"}
-        polygonAltitude={0.01}
+        polygonSideColor={d => {
+          return d.properties.ISO_A2 === props.country ? "rgba(192, 192, 192, 0.2)" : "rgba(0, 0, 0, 0)";
+        }}
+        polygonAltitude={d => {
+          const countryCode = d.properties.ISO_A2;
+          if (countryCode === props.country) return 0.05;
+          const relevantCodes = props.impex === "import"
+            ? filtered.map(a => a.origin_country)
+            : filtered.map(a => a.country);
+
+          if (relevantCodes.includes(countryCode)) return 0.03;
+          return 0.01;
+          return 0.01;
+        }}
         rendererConfig={{
           logarithmicDepthBuffer: true,
           precision: "highp",
@@ -176,15 +226,20 @@ export function MyGlobe(props: Props) {
         labelLat={d => d.geometry.coordinates[1]}
         labelLng={d => d.geometry.coordinates[0]}
         labelText={d => d.properties.COUNTRY}
-        labelSize={0.8}
-        labelAltitude={0.02}
+        labelSize={d => props.country === d.properties.ISO ? 1.25 : 0.8}
+        labelAltitude={d => {
+          const countryCode = d.properties.ISO;
+          if (countryCode === props.country) return 0.05;
+          return 0.01;
+        }}
         labelIncludeDot={true}
         arcsData={props.country === "Global" ? data : filtered}
         arcEndLat={a => a.country_coords[1]}
         arcEndLng={a => a.country_coords[0]}
         arcStartLat={a => a.origin_coords[1]}
         arcStartLng={a => a.origin_coords[0]}
-        arcLabel={a => `${a.name} by ${a.artists}`}
+        arcLabel={a =>
+          `<b>${a.origin_country} \u2192 ${a.country}<b><br/><b>SONG:</b> ${a.name}<br/><b>ARTIST:</b> ${a.artists}`}
         arcColor={() => ["rgba(0, 255, 0, 0.5)", "rgba(255, 0, 0, 0.5)"]}
         arcAltitude={props.country === "Global" ? 0.5 : a => 0.1 + Math.random() * 0.7}
         arcStroke={0.5}

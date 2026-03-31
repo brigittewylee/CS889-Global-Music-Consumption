@@ -243,7 +243,6 @@ export function CountryFilter(props: Props) {
     "SK",
     "ST",
     "SY",
-    "TH",
     "TR",
     "TW",
     "UA",
@@ -255,8 +254,8 @@ export function CountryFilter(props: Props) {
   ];
 
   return (
-    <Box sx={{ width: "100%", border: "1px solid orange" }}>
-      <Typography sx={{ color: "white" }}>
+    <Box sx={{ width: "100%" }}>
+      <Typography sx={{ color: "white", pb: 0.5 }}>
         Filter by Country:
       </Typography>
       <FormControl sx={{ width: "100%" }}>
@@ -265,11 +264,44 @@ export function CountryFilter(props: Props) {
           labelId="country-filter-label"
           id="country-filter"
           onChange={(e) => props.setCountry(e.target.value)}
+          MenuProps={{
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+            PaperProps: {
+              sx: {
+                bgcolor: "#1a1a1a",
+                maxHeight: 350,
+                "&::-webkit-scrollbar": { width: "6px" },
+                "&::-webkit-scrollbar-track": { background: "transparent" },
+                "&::-webkit-scrollbar-thumb": {
+                  background: "rgba(255, 255, 255, 0.8)",
+                  borderRadius: "10px",
+                },
+              },
+            },
+          }}
+          sx={{
+            color: "white",
+            fontFamily: "Nueue",
+            "& .MuiSelect-select": {
+              pt: "5px",
+              pb: "5px",
+            },
+          }}
         >
           {props.impex === "import"
-            ? importCountries.map((country) => <MenuItem key={country} value={country}>{countryMap[country]}</MenuItem>)
-            : exportCountries.map((country) => <MenuItem key={country} value={country}>{countryMap[country]}
-            </MenuItem>)}
+            ? importCountries.map((country) => (
+              <MenuItem sx={{ fontFamily: "Nueue" }} key={country} value={country}>{countryMap[country]}</MenuItem>
+            ))
+            : exportCountries.map((country) => (
+              <MenuItem sx={{ fontFamily: "Nueue" }} key={country} value={country}>{countryMap[country]}</MenuItem>
+            ))}
         </Select>
       </FormControl>
     </Box>

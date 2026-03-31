@@ -1,8 +1,15 @@
 import { Box, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import Inter from "../fonts/inter.woff2";
+import Nueue from "../fonts/Nueue.woff2";
+import NueueBold from "../fonts/NueueBold.woff2";
 
-// 1. Force a pure black dark theme
 const theme = createTheme({
+  typography: {
+    fontFamily: "\"Inter\", \"Nueue\", \"NueueBold\", sans-serif",
+    h1: { fontWeight: 700 },
+    body1: { fontWeight: 500 },
+  },
   palette: {
     mode: "dark",
     background: {
@@ -27,6 +34,32 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+          @font-face {
+            font-family: 'Inter';
+            src: url(${Inter}) format('woff2');
+            font-display: swap;
+          }
+          @font-face {
+            font-family: 'Nueue';
+            src: url(${Nueue}) format('woff2');
+            font-display: swap;
+          }
+          @font-face {
+            font-family: 'NueueBold';
+            src: url(${NueueBold}) format('woff2');
+            font-display: swap;
+          }
+
+          body {
+            margin: 0;
+            scrollbar-gutter: stable;
+          }
+        `,
+          }}
+        />
       </head>
       <body>
         <ThemeProvider theme={theme}>
