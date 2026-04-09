@@ -6,7 +6,6 @@ type Props = {
 };
 
 export function ImportExportRadioButton(props: Props) {
-  console.log(props.impex);
   return (
     <FormControl>
       <FormLabel>

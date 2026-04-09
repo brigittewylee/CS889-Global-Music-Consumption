@@ -132,7 +132,6 @@ export function MyGlobe(props: Props) {
 
     globeRef.current.postProcessingComposer().addPass(bloomPass);
   }, []);
-  console.log(props.country);
 
   useEffect(() => {
     Promise.all([
@@ -155,7 +154,6 @@ export function MyGlobe(props: Props) {
           return { country, country_coords, month, name, artists, borda_score, origin_country, origin_coords };
         });
         setData(formattedData);
-        console.log("test:", formattedData[0]);
       });
   }, []);
 
@@ -197,25 +195,32 @@ export function MyGlobe(props: Props) {
     <Box>
       <Globe
         ref={globeRef}
-        showAtmosphere={false}
+        showAtmosphere={true}
+        atmosphereAltitude={0.1}
         backgroundColor="rgba(0,0,0,0)"
         polygonsData={countryPolygons.features}
         polygonCapColor={d => {
-          return d.properties.ISO_A2 === props.country ? "rgba(192, 192, 192, 0.07)" : "rgba(0, 0, 0, 0)";
+          const countryCode = d.properties.ISO_A2;
+          if (countryCode === props.country) return "rgba(63, 159, 198, 0.06)";
+
+          const relevantCodes = props.impex === "import"
+            ? filtered.map(d => d.origin_country)
+            : filtered.map(d => d.country);
+
+          if (relevantCodes.includes(countryCode)) return "rgba(71, 108, 122, 0.06)";
+          return "rgba(0, 0, 0, 0)";
         }}
-        polygonStrokeColor={() => "#ffffff"}
+        polygonStrokeColor={d => {
+          const countryCode = d.properties.ISO_A2;
+          if (countryCode === props.country) return "rgba(63, 159, 198, 0.06)";
+          return "white";
+        }}
         polygonSideColor={d => {
-          return d.properties.ISO_A2 === props.country ? "rgba(192, 192, 192, 0.2)" : "rgba(0, 0, 0, 0)";
+          return d.properties.ISO_A2 === props.country ? "rgba(63, 159, 198, 0.06)" : "rgba(0, 0, 0, 0)";
         }}
         polygonAltitude={d => {
           const countryCode = d.properties.ISO_A2;
-          if (countryCode === props.country) return 0.05;
-          const relevantCodes = props.impex === "import"
-            ? filtered.map(a => a.origin_country)
-            : filtered.map(a => a.country);
-
-          if (relevantCodes.includes(countryCode)) return 0.03;
-          return 0.01;
+          if (countryCode === props.country) return 0.03;
           return 0.01;
         }}
         rendererConfig={{
@@ -255,5 +260,5 @@ export function MyGlobe(props: Props) {
 // 1. Most of the code based off examples from official globe-gl examples found here: https://github.com/vasturiano/globe.gl/tree/master
 //     !! Specific examples used: hollow-globe, choropleth-countries, world-cities, airline-routes
 // 2. Country centroids: https://raw.githubusercontent.com/gavinr/world-countries-centroids/master/dist/countries.geojson
-// 3. Add singapore, comoros, saotome and principles, hongkong polygons: https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/50m/cultural/ne_50m_admin_0_countries.json
+// 3. Add singapore, comoros, saotome and principles, hongkong, taiwan polygons: https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/50m/cultural/ne_50m_admin_0_countries.json
 //

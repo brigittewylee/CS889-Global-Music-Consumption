@@ -253,6 +253,11 @@ export function CountryFilter(props: Props) {
     "ZA",
   ];
 
+  const importFull = importCountries.map(country => ({ iso: country, full: countryMap[country] }));
+  const sortedImport = importFull.sort((a, b) => a.full.localeCompare(b.full));
+  const exportFull = exportCountries.map(country => ({ iso: country, full: countryMap[country] }));
+  const sortedExport = exportFull.sort((a, b) => a.full.localeCompare(b.full));
+
   return (
     <Box sx={{ width: "100%" }}>
       <Typography sx={{ color: "white", pb: 0.5 }}>
@@ -260,7 +265,8 @@ export function CountryFilter(props: Props) {
       </Typography>
       <FormControl sx={{ width: "100%" }}>
         <Select
-          value={props.country ?? "Global"}
+          value={props.country ?? ""}
+          displayEmpty
           labelId="country-filter-label"
           id="country-filter"
           onChange={(e) => props.setCountry(e.target.value)}
@@ -295,12 +301,15 @@ export function CountryFilter(props: Props) {
             },
           }}
         >
+          <MenuItem disabled value="">
+            <Typography sx={{ fontFamily: "Nueue", color: "grey" }}>Select a country</Typography>
+          </MenuItem>
           {props.impex === "import"
-            ? importCountries.map((country) => (
-              <MenuItem sx={{ fontFamily: "Nueue" }} key={country} value={country}>{countryMap[country]}</MenuItem>
+            ? sortedImport.map((country) => (
+              <MenuItem sx={{ fontFamily: "Nueue" }} key={country.iso} value={country.iso}>{country.full}</MenuItem>
             ))
-            : exportCountries.map((country) => (
-              <MenuItem sx={{ fontFamily: "Nueue" }} key={country} value={country}>{countryMap[country]}</MenuItem>
+            : sortedExport.map((country) => (
+              <MenuItem sx={{ fontFamily: "Nueue" }} key={country.iso} value={country.iso}>{country.full}</MenuItem>
             ))}
         </Select>
       </FormControl>

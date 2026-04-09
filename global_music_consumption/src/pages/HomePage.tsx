@@ -136,10 +136,9 @@ export function DestinationList({ destinations = [] }: { destinations: string[] 
 
 export function HomePage() {
   const [date, setDate] = useState("2023-10");
-  const [country, setCountry] = useState("CA");
+  const [country, setCountry] = useState("");
   const [impex, setImpex] = useState("import");
   const [topSongs, setTopSongs] = useState([]);
-  console.log(topSongs);
   return (
     <Box
       sx={{
@@ -355,7 +354,7 @@ export function HomePage() {
           background: "linear-gradient(to top, #000000, #00000000)",
         }}
       >
-        <TimelineSlider date={date} setDate={setDate} />
+        <TimelineSlider date={date} setDate={setDate} country={country} />
       </Box>
     </Box>
   );
