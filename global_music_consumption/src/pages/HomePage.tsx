@@ -3,6 +3,7 @@ import { MyGlobe } from "#/components/Globe";
 import { ImportExportRadioButton } from "#/components/RadioButtons";
 import { TimelineSlider } from "#/components/TimelineSlider";
 import { Box, Typography } from "@mui/material";
+import { Proportions } from "lucide-react";
 import { useState } from "react";
 
 const includedCountries = {
@@ -188,11 +189,15 @@ export function HomePage() {
 
           <CountryFilter country={country} setCountry={setCountry} impex={impex} />
           <Box sx={{ pt: 1, pb: 1 }}>
-            <ImportExportRadioButton impex={impex} setImpex={setImpex} />
+            <ImportExportRadioButton impex={impex} setImpex={setImpex} country={country} />
           </Box>
           <Box sx={{ display: "flex", pb: 0.5 }}>
             {impex === "import"
-              ? <Typography sx={{ color: "white" }}>Top Songs Imported to {includedCountries[country]}:</Typography>
+              ? (
+                <Typography sx={{ color: country ? "white" : "grey" }}>
+                  Top Songs Imported to {includedCountries[country]}:
+                </Typography>
+              )
               : <Typography sx={{ color: "white" }}>Top Songs Exported from {includedCountries[country]}:</Typography>}
           </Box>
 

@@ -78,7 +78,6 @@ export function TimelineSlider(props: Props) {
     value: t.value,
     month: monthMap[t.label.split("-")[1]],
   }));
-  console.log(props.country);
 
   return (
     <Box>
@@ -108,14 +107,9 @@ export function TimelineSlider(props: Props) {
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                gap: 1
+                gap: 1,
               }}
-            >
-              <TriangleAlert size={16} color="#f92727b8" strokeWidth={2} />
-              <Typography sx={{ alignContent: "center", color: "#f92727b8", fontFamily: "Nueue" }}>
-                Please Select a Country First
-              </Typography>
-            </Box>
+            />
           )}
       </Box>
       <Box

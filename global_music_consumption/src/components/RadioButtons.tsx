@@ -3,11 +3,12 @@ import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mu
 type Props = {
   impex: string;
   setImpex: (val: string) => void;
+  country: string;
 };
 
 export function ImportExportRadioButton(props: Props) {
   return (
-    <FormControl>
+    <FormControl disabled={!props.country}>
       <FormLabel>
         <RadioGroup row value={props.impex} onChange={(e) => props.setImpex(e.target.value)}>
           <FormControlLabel

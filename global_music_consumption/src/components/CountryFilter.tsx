@@ -1,4 +1,4 @@
-import { Box, FormControl, MenuItem, Select, Typography } from "@mui/material";
+import { Box, FormControl, keyframes, MenuItem, Select, Typography } from "@mui/material";
 
 type Props = {
   country: string;
@@ -258,11 +258,26 @@ export function CountryFilter(props: Props) {
   const exportFull = exportCountries.map(country => ({ iso: country, full: countryMap[country] }));
   const sortedExport = exportFull.sort((a, b) => a.full.localeCompare(b.full));
 
+  const flashAnimation = keyframes`
+  0% { opacity: 1; }
+  50% { opacity: 0.1; }
+  100% { opacity: 1; }
+`;
+
   return (
     <Box sx={{ width: "100%" }}>
-      <Typography sx={{ color: "white", pb: 0.5 }}>
-        Filter by Country:
-      </Typography>
+      {props.country
+        ? (
+          <Typography sx={{ color: "white", pb: 0.5 }}>
+            Filter by Country:
+          </Typography>
+        )
+        : (
+          <Typography sx={{ animation: `${flashAnimation} 3s ease-in-out`, color: "#f92727b8" }}>
+            Select a Country to begin:
+          </Typography>
+        )}
+
       <FormControl sx={{ width: "100%" }}>
         <Select
           value={props.country ?? ""}
