@@ -191,6 +191,12 @@ export function MyGlobe(props: Props) {
     props.onFiltered(filtered);
   }, [filtered]);
 
+  const filteredExportArcs = useMemo(() => {
+    return data.filter(a =>
+      a.origin_country === props.country && a.month === props.date && a.country !== a.origin_country
+    );
+  }, [data, props.country, props.date]);
+
   return (
     <Box>
       <Globe
@@ -204,8 +210,8 @@ export function MyGlobe(props: Props) {
           if (countryCode === props.country) return "rgba(63, 159, 198, 0.06)";
 
           const relevantCodes = props.impex === "import"
-            ? filtered.map(d => d.origin_country)
-            : filtered.map(d => d.country);
+            ? filteredImport.map(d => d.origin_country)
+            : filteredExportArcs.map(d => d.country);
 
           if (relevantCodes.includes(countryCode)) return "rgba(71, 108, 122, 0.06)";
           return "rgba(0, 0, 0, 0)";
@@ -238,7 +244,7 @@ export function MyGlobe(props: Props) {
           return 0.01;
         }}
         labelIncludeDot={true}
-        arcsData={props.country === "Global" ? data : filtered}
+        arcsData={props.country === "Global" ? data : props.impex === "import" ? filteredImport : filteredExportArcs}
         arcEndLat={a => a.country_coords[1]}
         arcEndLng={a => a.country_coords[0]}
         arcStartLat={a => a.origin_coords[1]}
@@ -261,4 +267,4 @@ export function MyGlobe(props: Props) {
 //     !! Specific examples used: hollow-globe, choropleth-countries, world-cities, airline-routes
 // 2. Country centroids: https://raw.githubusercontent.com/gavinr/world-countries-centroids/master/dist/countries.geojson
 // 3. Add singapore, comoros, saotome and principles, hongkong, taiwan polygons: https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/50m/cultural/ne_50m_admin_0_countries.json
-//
+

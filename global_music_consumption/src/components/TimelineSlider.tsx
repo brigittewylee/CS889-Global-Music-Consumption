@@ -1,5 +1,5 @@
-import { Box, Button, Slider, Tooltip, Typography } from "@mui/material";
-import { Pause, Play, TriangleAlert } from "lucide-react";
+import { Box, Button, Slider, Typography } from "@mui/material";
+import { Pause, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 type Props = {
