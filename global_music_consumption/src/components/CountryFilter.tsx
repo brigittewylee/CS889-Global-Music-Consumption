@@ -261,8 +261,7 @@ export function CountryFilter(props: Props) {
   const flashAnimation = keyframes`
   0% { opacity: 1; }
   50% { opacity: 0.1; }
-  100% { opacity: 1; }
-`;
+  100% { opacity: 1; }zz`;
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -273,7 +272,7 @@ export function CountryFilter(props: Props) {
           </Typography>
         )
         : (
-          <Typography sx={{ animation: `${flashAnimation} 3s ease-in-out`, color: "#f92727b8" }}>
+          <Typography sx={{ animation: `${flashAnimation} 3s ease-in-out`, color: "#ff9d9d" }}>
             Select a Country to begin:
           </Typography>
         )}
