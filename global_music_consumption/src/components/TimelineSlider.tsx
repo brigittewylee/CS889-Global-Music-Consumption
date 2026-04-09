@@ -244,3 +244,6 @@ export function TimelineSlider(props: Props) {
     </Box>
   );
 }
+
+// References: 
+// 1. Timeline animation and offsetting placement of years written with help from AI

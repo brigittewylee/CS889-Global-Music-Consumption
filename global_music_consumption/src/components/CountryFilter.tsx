@@ -261,7 +261,7 @@ export function CountryFilter(props: Props) {
   const flashAnimation = keyframes`
   0% { opacity: 1; }
   50% { opacity: 0.1; }
-  100% { opacity: 1; }zz`;
+  100% { opacity: 1; }`;
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -330,3 +330,6 @@ export function CountryFilter(props: Props) {
     </Box>
   );
 }
+
+// References:
+// 1. Adjustments to scrollbar: https://stackoverflow.com/questions/53772429/material-ui-how-can-i-style-the-scrollbar-with-css-in-js

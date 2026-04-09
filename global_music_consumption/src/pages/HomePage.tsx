@@ -3,7 +3,6 @@ import { MyGlobe } from "#/components/Globe";
 import { ImportExportRadioButton } from "#/components/RadioButtons";
 import { TimelineSlider } from "#/components/TimelineSlider";
 import { Box, Typography } from "@mui/material";
-import { Proportions } from "lucide-react";
 import { useState } from "react";
 
 const includedCountries = {
@@ -364,3 +363,7 @@ export function HomePage() {
     </Box>
   );
 }
+
+// References:
+// 1. Collapsing and expanding destinations written with help from AI
+// 2. Adjustments to scrollbar: https://stackoverflow.com/questions/53772429/material-ui-how-can-i-style-the-scrollbar-with-css-in-js
